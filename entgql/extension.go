@@ -16,7 +16,6 @@ package entgql
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,6 +26,7 @@ import (
 	"github.com/99designs/gqlgen/api"
 	"github.com/99designs/gqlgen/codegen/config"
 	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/vektah/gqlparser/v2/formatter"
 )
 
 type (
@@ -311,7 +311,7 @@ func (e *Extension) genSchemaHook() gen.Hook {
 					if err != nil {
 						return err
 					}
-					insertDefinitions(e.schema.Types, input)
+					e.schema.AddTypes(input)
 				}
 			}
 
@@ -323,7 +323,14 @@ func (e *Extension) genSchemaHook() gen.Hook {
 			if e.path == "" {
 				return nil
 			}
-			return ioutil.WriteFile(e.path, []byte(printSchema(e.schema)), 0644)
+
+			f, err := os.OpenFile(e.path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+			if err != nil {
+				return err
+			}
+			formatter.NewFormatter(f, formatter.WithIndent("  ")).
+				FormatSchema(e.schema)
+			return f.Close()
 		})
 	}
 }

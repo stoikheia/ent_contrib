@@ -108,23 +108,23 @@ func newSchemaGenerator(g *gen.Graph) (*schemaGenerator, error) {
 	}, nil
 }
 
-func (e *schemaGenerator) buildSchema(schema *ast.Schema) error {
-	err := e.buildTypes(schema.Types)
+func (e *schemaGenerator) buildSchema(s *ast.Schema) error {
+	err := e.buildTypes(s)
 	if err != nil {
 		return err
 	}
-	insertDefinitions(schema.Types, builtinTypes()...)
+	s.AddTypes(builtinTypes()...)
 	if e.relaySpec {
-		insertDefinitions(schema.Types, relayBuiltinTypes()...)
+		s.AddTypes(relayBuiltinTypes()...)
 	}
 
 	for name, d := range directives {
-		schema.Directives[name] = d
+		s.Directives[name] = d
 	}
 	return nil
 }
 
-func (e *schemaGenerator) buildTypes(types map[string]*ast.Definition) error {
+func (e *schemaGenerator) buildTypes(s *ast.Schema) error {
 	var defaultInterfaces []string
 	if e.relaySpec {
 		defaultInterfaces = append(defaultInterfaces, "Node")
@@ -155,9 +155,10 @@ func (e *schemaGenerator) buildTypes(types map[string]*ast.Definition) error {
 		if len(ant.Implements) > 0 {
 			typ.Interfaces = append(typ.Interfaces, ant.Implements...)
 		}
-		insertDefinitions(types, typ)
+		s.AddTypes(typ)
 
-		var enumOrderByValues ast.EnumValueList
+		isSkipOrderField := ant.Skip.Is(SkipOrderField)
+		var enumOrderByValues []string
 		for _, f := range node.Fields {
 			ant, err := annotation(f.Annotations)
 			if err != nil {
@@ -168,13 +169,11 @@ func (e *schemaGenerator) buildTypes(types map[string]*ast.Definition) error {
 			}
 
 			// Check if this node has an OrderBy object
-			if ant.OrderField != "" {
+			if !isSkipOrderField && ant.OrderField != "" {
 				if ant.Skip.Is(SkipOrderField) {
 					return fmt.Errorf("entgql: ordered field %s.%s cannot be skipped", node.Name, f.Name)
 				}
-				enumOrderByValues = append(enumOrderByValues, &ast.EnumValueDefinition{
-					Name: ant.OrderField,
-				})
+				enumOrderByValues = append(enumOrderByValues, ant.OrderField)
 			}
 
 			if f.IsEnum() && !ant.Skip.Is(SkipEnumField) {
@@ -182,7 +181,7 @@ func (e *schemaGenerator) buildTypes(types map[string]*ast.Definition) error {
 				if err != nil {
 					return err
 				}
-				insertDefinitions(types, enum)
+				s.AddTypes(enum)
 			}
 		}
 
@@ -211,44 +210,11 @@ func (e *schemaGenerator) buildTypes(types map[string]*ast.Definition) error {
 				return ErrRelaySpecDisabled
 			}
 
-			defs, err := relayConnectionTypes(node)
+			pagination, err := nodePaginationNames(node)
 			if err != nil {
 				return err
 			}
-
-			insertDefinitions(types, defs...)
-			if len(enumOrderByValues) > 0 && !ant.Skip.Is(SkipOrderField) {
-				pagination, err := nodePaginationNames(node)
-				if err != nil {
-					return err
-				}
-
-				insertDefinitions(types,
-					&ast.Definition{
-						Name:       pagination.OrderField,
-						Kind:       ast.Enum,
-						EnumValues: enumOrderByValues,
-					},
-					&ast.Definition{
-						Name: pagination.Order,
-						Kind: ast.InputObject,
-						Fields: ast.FieldList{
-							{
-								Name: "direction",
-								Type: ast.NonNullNamedType("OrderDirection", nil),
-								DefaultValue: &ast.Value{
-									Raw:  "ASC",
-									Kind: ast.EnumValue,
-								},
-							},
-							{
-								Name: "field",
-								Type: ast.NonNullNamedType(pagination.OrderField, nil),
-							},
-						},
-					},
-				)
-			}
+			s.AddTypes(pagination.TypeDefs(enumOrderByValues)...)
 		}
 	}
 
@@ -603,20 +569,16 @@ https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo`,
 	}
 }
 
-func relayConnectionTypes(t *gen.Type) ([]*ast.Definition, error) {
-	pagination, err := nodePaginationNames(t)
-	if err != nil {
-		return nil, err
-	}
-	return []*ast.Definition{
+func (p *PaginationNames) TypeDefs(orderEnumValues []string) []*ast.Definition {
+	typeDefs := []*ast.Definition{
 		{
-			Name:        pagination.Edge,
+			Name:        p.Edge,
 			Kind:        ast.Object,
 			Description: "An edge in a connection.",
 			Fields: []*ast.FieldDefinition{
 				{
 					Name:        "node",
-					Type:        ast.NamedType(pagination.Node, nil),
+					Type:        ast.NamedType(p.Node, nil),
 					Description: "The item at the end of the edge.",
 				},
 				{
@@ -627,13 +589,13 @@ func relayConnectionTypes(t *gen.Type) ([]*ast.Definition, error) {
 			},
 		},
 		{
-			Name:        pagination.Connection,
+			Name:        p.Connection,
 			Kind:        ast.Object,
 			Description: "A connection to a list of items.",
 			Fields: []*ast.FieldDefinition{
 				{
 					Name:        "edges",
-					Type:        ast.ListType(ast.NamedType(pagination.Edge, nil), nil),
+					Type:        ast.ListType(ast.NamedType(p.Edge, nil), nil),
 					Description: "A list of edges.",
 				},
 				{
@@ -647,13 +609,42 @@ func relayConnectionTypes(t *gen.Type) ([]*ast.Definition, error) {
 				},
 			},
 		},
-	}, nil
-}
-
-func insertDefinitions(types map[string]*ast.Definition, defs ...*ast.Definition) {
-	for _, d := range defs {
-		types[d.Name] = d
 	}
+
+	if len(orderEnumValues) > 0 {
+		enumValues := make(ast.EnumValueList, 0, len(orderEnumValues))
+		for _, value := range orderEnumValues {
+			enumValues = append(enumValues, &ast.EnumValueDefinition{
+				Name: value,
+			})
+		}
+		typeDefs = append(typeDefs,
+			&ast.Definition{
+				Name:       p.OrderField,
+				Kind:       ast.Enum,
+				EnumValues: enumValues,
+			},
+			&ast.Definition{
+				Name: p.Order,
+				Kind: ast.InputObject,
+				Fields: ast.FieldList{
+					{
+						Name: "direction",
+						Type: ast.NonNullNamedType("OrderDirection", nil),
+						DefaultValue: &ast.Value{
+							Raw:  "ASC",
+							Kind: ast.EnumValue,
+						},
+					},
+					{
+						Name: "field",
+						Type: ast.NonNullNamedType(p.OrderField, nil),
+					},
+				},
+			})
+	}
+
+	return typeDefs
 }
 
 func namedType(name string, nullable bool) *ast.Type {

@@ -36,7 +36,7 @@ func TestEntGQL_buildTypes(t *testing.T) {
 	schema := &ast.Schema{
 		Types: make(map[string]*ast.Definition),
 	}
-	err = plugin.buildTypes(schema.Types)
+	err = plugin.buildTypes(schema)
 	require.NoError(t, err)
 
 	require.Equal(t, `type Category implements Entity {
@@ -102,7 +102,7 @@ func TestEntGQL_buildTypes_todoplugin_relay(t *testing.T) {
 	schema := &ast.Schema{
 		Types: make(map[string]*ast.Definition),
 	}
-	err = plugin.buildTypes(schema.Types)
+	err = plugin.buildTypes(schema)
 	require.NoError(t, err)
 
 	require.Equal(t, `type Category implements Node & Entity {
@@ -290,16 +290,17 @@ type SuperTodoEdge {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := relayConnectionTypes(tt.args.t)
-			if (err != nil) != tt.wantErr {
+			pagination, err := nodePaginationNames(tt.args.t)
+			if err != nil {
 				t.Errorf("relayConnection() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			got := pagination.TypeDefs(nil)
 
 			s := &ast.Schema{
 				Types: map[string]*ast.Definition{},
 			}
-			insertDefinitions(s.Types, got...)
+			s.AddTypes(got...)
 			gots := printSchema(s)
 			if !reflect.DeepEqual(gots, tt.want) {
 				t.Errorf("relayConnection() = %v, want %v", gots, tt.want)
@@ -352,7 +353,7 @@ type PageInfo {
 			s := &ast.Schema{
 				Types: map[string]*ast.Definition{},
 			}
-			insertDefinitions(s.Types, got...)
+			s.AddTypes(got...)
 			gots := printSchema(s)
 			if !reflect.DeepEqual(gots, tt.want) {
 				t.Errorf("relayBuiltinTypes() = %v, want %v", gots, tt.want)
