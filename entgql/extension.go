@@ -174,7 +174,6 @@ func NewExtension(opts ...ExtensionOption) (*Extension, error) {
 		templates: AllTemplates,
 		schema: &ast.Schema{
 			Directives: map[string]*ast.DirectiveDefinition{},
-			Types:      map[string]*ast.Definition{},
 		},
 	}
 	for _, opt := range opts {

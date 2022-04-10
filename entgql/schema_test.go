@@ -33,9 +33,7 @@ func TestEntGQL_buildTypes(t *testing.T) {
 	require.NoError(t, err)
 	plugin.relaySpec = false
 
-	schema := &ast.Schema{
-		Types: make(map[string]*ast.Definition),
-	}
+	schema := &ast.Schema{}
 	err = plugin.buildTypes(schema)
 	require.NoError(t, err)
 
@@ -99,9 +97,7 @@ func TestEntGQL_buildTypes_todoplugin_relay(t *testing.T) {
 	plugin, err := newSchemaGenerator(graph)
 
 	require.NoError(t, err)
-	schema := &ast.Schema{
-		Types: make(map[string]*ast.Definition),
-	}
+	schema := &ast.Schema{}
 	err = plugin.buildTypes(schema)
 	require.NoError(t, err)
 
@@ -297,9 +293,7 @@ type SuperTodoEdge {
 			}
 			got := pagination.TypeDefs(nil)
 
-			s := &ast.Schema{
-				Types: map[string]*ast.Definition{},
-			}
+			s := &ast.Schema{}
 			s.AddTypes(got...)
 			gots := printSchema(s)
 			if !reflect.DeepEqual(gots, tt.want) {
@@ -350,9 +344,7 @@ type PageInfo {
 		t.Run(tt.name, func(t *testing.T) {
 			got := relayBuiltinTypes()
 
-			s := &ast.Schema{
-				Types: map[string]*ast.Definition{},
-			}
+			s := &ast.Schema{}
 			s.AddTypes(got...)
 			gots := printSchema(s)
 			if !reflect.DeepEqual(gots, tt.want) {
