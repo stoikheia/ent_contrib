@@ -17,7 +17,9 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"time"
 
 	"entgo.io/contrib/entgql/internal/todo/ent/category"
@@ -359,6 +361,23 @@ func (i *CategoryWhereInput) P() (predicate.Category, error) {
 	}
 }
 
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *CategoryWhereInput) UnmarshalGQL(obj interface{}) error {
+	raw, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, i)
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+//
+// This function should never be called because our object is Input.
+// It exists to make GQLGen aware of objects has custom unmarshal function
+func (i CategoryWhereInput) MarshalGQL(w io.Writer) {
+	panic("CategoryWhereInput.MarshalGQL not implemented")
+}
+
 // GroupWhereInput represents a where input for filtering Group queries.
 type GroupWhereInput struct {
 	Not *GroupWhereInput   `json:"not,omitempty"`
@@ -544,6 +563,23 @@ func (i *GroupWhereInput) P() (predicate.Group, error) {
 	default:
 		return group.And(predicates...), nil
 	}
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *GroupWhereInput) UnmarshalGQL(obj interface{}) error {
+	raw, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, i)
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+//
+// This function should never be called because our object is Input.
+// It exists to make GQLGen aware of objects has custom unmarshal function
+func (i GroupWhereInput) MarshalGQL(w io.Writer) {
+	panic("GroupWhereInput.MarshalGQL not implemented")
 }
 
 // TodoWhereInput represents a where input for filtering Todo queries.
@@ -863,6 +899,23 @@ func (i *TodoWhereInput) P() (predicate.Todo, error) {
 	}
 }
 
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *TodoWhereInput) UnmarshalGQL(obj interface{}) error {
+	raw, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, i)
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+//
+// This function should never be called because our object is Input.
+// It exists to make GQLGen aware of objects has custom unmarshal function
+func (i TodoWhereInput) MarshalGQL(w io.Writer) {
+	panic("TodoWhereInput.MarshalGQL not implemented")
+}
+
 // UserWhereInput represents a where input for filtering User queries.
 type UserWhereInput struct {
 	Not *UserWhereInput   `json:"not,omitempty"`
@@ -1048,4 +1101,21 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 	default:
 		return user.And(predicates...), nil
 	}
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *UserWhereInput) UnmarshalGQL(obj interface{}) error {
+	raw, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, i)
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+//
+// This function should never be called because our object is Input.
+// It exists to make GQLGen aware of objects has custom unmarshal function
+func (i UserWhereInput) MarshalGQL(w io.Writer) {
+	panic("UserWhereInput.MarshalGQL not implemented")
 }

@@ -186,5 +186,22 @@ in the LICENSE file in the root directory of this source tree.
             return {{ $n.Package }}.And(predicates...), nil
         }
     }
+
+    // UnmarshalGQL implements the graphql.Unmarshaler interface
+    func (i *{{ $input }}) UnmarshalGQL(obj interface{}) error {
+        raw, err :=json.Marshal(obj)
+        if err != nil {
+            return err
+        }
+        return json.Unmarshal(raw, i)
+    }
+
+    // MarshalGQL implements the graphql.Marshaler interface
+    //
+    // This function should never be called because our object is Input.
+    // It exists to make GQLGen aware of objects has custom unmarshal function
+    func (i {{ $input }}) MarshalGQL(w io.Writer) {
+        panic("{{ $input }}.MarshalGQL not implemented")
+    }
 {{- end }}
 {{ end }}
