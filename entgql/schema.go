@@ -90,9 +90,10 @@ var (
 
 // TODO(giautm): refactor internal APIs
 type schemaGenerator struct {
-	graph     *gen.Graph
-	nodes     []*gen.Type
-	relaySpec bool
+	graph         *gen.Graph
+	nodes         []*gen.Type
+	relaySpec     bool
+	genWhereInput bool
 }
 
 func newSchemaGenerator(g *gen.Graph) (*schemaGenerator, error) {
@@ -245,7 +246,9 @@ func (e *schemaGenerator) buildTypes(s *ast.Schema) error {
 
 			if ant.QueryField != nil {
 				name := ant.QueryField.fieldName(gqlType)
-				def := pagination.ConnectionField(name)
+				def := pagination.ConnectionField(name, true,
+					e.genWhereInput && !ant.Skip.Is(SkipWhereInput),
+				)
 				def.Directives = e.buildDirectives(ant.QueryField.Directives)
 				queryFields = append(queryFields, def)
 			}
@@ -373,7 +376,9 @@ func (e *schemaGenerator) buildEdge(edge *gen.Edge, edgeAnt *Annotation) ([]*ast
 			}
 
 			fieldDef = paginationNames(gqlType).
-				ConnectionField(name)
+				ConnectionField(name, true,
+					e.genWhereInput && !edgeAnt.Skip.Is(SkipWhereInput) && !ant.Skip.Is(SkipWhereInput),
+				)
 		default:
 			fieldDef.Type = listNamedType(gqlType, edge.Optional)
 		}

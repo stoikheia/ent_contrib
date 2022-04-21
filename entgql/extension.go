@@ -291,6 +291,7 @@ func (e *Extension) genSchemaHook() gen.Hook {
 				return err
 			}
 
+			genSchema.genWhereInput = e.genWhereInput
 			if e.genSchema {
 				if err = genSchema.buildSchema(e.schema); err != nil {
 					return err
@@ -306,7 +307,7 @@ func (e *Extension) genSchemaHook() gen.Hook {
 					return err
 				}
 				for _, node := range nodes {
-					input, err := e.whereType(node)
+					input, err := e.whereType(g, node)
 					if err != nil {
 						return err
 					}
@@ -339,9 +340,13 @@ func (e *Extension) whereExists() (int, bool) {
 }
 
 // addWhereType returns the a <T>WhereInput to the given schema type (e.g. User -> UserWhereInput).
-func (e *Extension) whereType(t *gen.Type) (*ast.Definition, error) {
+func (e *Extension) whereType(g *gen.Graph, t *gen.Type) (*ast.Definition, error) {
+	pagination, err := nodePaginationNames(t)
+	if err != nil {
+		return nil, err
+	}
 	var (
-		name    = t.Name + "WhereInput"
+		name    = pagination.WhereInput
 		typeDef = &ast.Definition{
 			Name:        name,
 			Kind:        ast.InputObject,
@@ -352,6 +357,9 @@ func (e *Extension) whereType(t *gen.Type) (*ast.Definition, error) {
 					Type: ast.NamedType(name, nil),
 				},
 			},
+			// Directives: []*ast.Directive{
+			// 	goModel(fmt.Sprintf("%s.%s", g.Package, name)),
+			// },
 		}
 	)
 	for _, op := range []string{"and", "or"} {
