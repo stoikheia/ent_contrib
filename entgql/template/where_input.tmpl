@@ -237,13 +237,29 @@ import (
                         {{- $type = "bool" }}
                     {{- end }}
                     {{- if $op.Variadic }}
-                        t := make([]{{ $type }}, 0, len(v.([]interface{})))
-                        for _, o := range v.([]interface{}) {
-                            t = append(t, o.({{ $type }}))
-                        }
-                        i.{{ $field }} = t
+                        {{- if hasUnmarshalGQL $f.Type }}
+                            i.{{ $field }} = make([]{{ $type }}, len(v.([]interface{})))
+                            for idx, o := range v.([]interface{}) {
+                                err = i.{{ $field }}[idx].UnmarshalGQL(o)
+                                if err != nil {
+                                    return err
+                                }
+                            }
+                        {{- else }}
+                            t := make([]{{ $type }}, 0, len(v.([]interface{})))
+                            for _, o := range v.([]interface{}) {
+                                t = append(t, o.({{ $type }}))
+                            }
+                            i.{{ $field }} = t
+                        {{- end }}
                     {{- else if or $op.Niladic $f.Type.RType.IsPtr }}
                         i.{{ $field }} = v.({{ $type }})
+                    {{- else if hasUnmarshalGQL $f.Type }}
+                        i.{{ $field }} = new({{ $type }})
+                        err = i.{{ $field }}.UnmarshalGQL(v)
+                        if err != nil {
+                            return err
+                        }
                     {{- else }}
                         {{- if $f.Type.Type.Float }}
                             f, err := v.(json.Number).Float64()

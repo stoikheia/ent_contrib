@@ -399,42 +399,64 @@ func (i *CategoryWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 
 	// "id" field predicates.
 	if v, ok := asMap["id"]; ok {
-		t := v.(pulid.ID)
-		i.ID = &t
+		i.ID = new(pulid.ID)
+		err = i.ID.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idNEQ"]; ok {
-		t := v.(pulid.ID)
-		i.IDNEQ = &t
+		i.IDNEQ = new(pulid.ID)
+		err = i.IDNEQ.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDIn = t
 	}
 	if v, ok := asMap["idNotIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDNotIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDNotIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDNotIn = t
 	}
 	if v, ok := asMap["idGT"]; ok {
-		t := v.(pulid.ID)
-		i.IDGT = &t
+		i.IDGT = new(pulid.ID)
+		err = i.IDGT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idGTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDGTE = &t
+		i.IDGTE = new(pulid.ID)
+		err = i.IDGTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLT"]; ok {
-		t := v.(pulid.ID)
-		i.IDLT = &t
+		i.IDLT = new(pulid.ID)
+		err = i.IDLT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDLTE = &t
+		i.IDLTE = new(pulid.ID)
+		err = i.IDLTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 
 	// "text" field predicates.
@@ -946,42 +968,64 @@ func (i *GroupWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 
 	// "id" field predicates.
 	if v, ok := asMap["id"]; ok {
-		t := v.(pulid.ID)
-		i.ID = &t
+		i.ID = new(pulid.ID)
+		err = i.ID.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idNEQ"]; ok {
-		t := v.(pulid.ID)
-		i.IDNEQ = &t
+		i.IDNEQ = new(pulid.ID)
+		err = i.IDNEQ.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDIn = t
 	}
 	if v, ok := asMap["idNotIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDNotIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDNotIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDNotIn = t
 	}
 	if v, ok := asMap["idGT"]; ok {
-		t := v.(pulid.ID)
-		i.IDGT = &t
+		i.IDGT = new(pulid.ID)
+		err = i.IDGT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idGTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDGTE = &t
+		i.IDGTE = new(pulid.ID)
+		err = i.IDGTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLT"]; ok {
-		t := v.(pulid.ID)
-		i.IDLT = &t
+		i.IDLT = new(pulid.ID)
+		err = i.IDLT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDLTE = &t
+		i.IDLTE = new(pulid.ID)
+		err = i.IDLTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 
 	// "name" field predicates.
@@ -1419,42 +1463,64 @@ func (i *TodoWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 
 	// "id" field predicates.
 	if v, ok := asMap["id"]; ok {
-		t := v.(pulid.ID)
-		i.ID = &t
+		i.ID = new(pulid.ID)
+		err = i.ID.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idNEQ"]; ok {
-		t := v.(pulid.ID)
-		i.IDNEQ = &t
+		i.IDNEQ = new(pulid.ID)
+		err = i.IDNEQ.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDIn = t
 	}
 	if v, ok := asMap["idNotIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDNotIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDNotIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDNotIn = t
 	}
 	if v, ok := asMap["idGT"]; ok {
-		t := v.(pulid.ID)
-		i.IDGT = &t
+		i.IDGT = new(pulid.ID)
+		err = i.IDGT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idGTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDGTE = &t
+		i.IDGTE = new(pulid.ID)
+		err = i.IDGTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLT"]; ok {
-		t := v.(pulid.ID)
-		i.IDLT = &t
+		i.IDLT = new(pulid.ID)
+		err = i.IDLT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDLTE = &t
+		i.IDLTE = new(pulid.ID)
+		err = i.IDLTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 
 	// "created_at" field predicates.
@@ -1914,42 +1980,64 @@ func (i *UserWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 
 	// "id" field predicates.
 	if v, ok := asMap["id"]; ok {
-		t := v.(pulid.ID)
-		i.ID = &t
+		i.ID = new(pulid.ID)
+		err = i.ID.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idNEQ"]; ok {
-		t := v.(pulid.ID)
-		i.IDNEQ = &t
+		i.IDNEQ = new(pulid.ID)
+		err = i.IDNEQ.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDIn = t
 	}
 	if v, ok := asMap["idNotIn"]; ok {
-		t := make([]pulid.ID, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(pulid.ID))
+		i.IDNotIn = make([]pulid.ID, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.IDNotIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.IDNotIn = t
 	}
 	if v, ok := asMap["idGT"]; ok {
-		t := v.(pulid.ID)
-		i.IDGT = &t
+		i.IDGT = new(pulid.ID)
+		err = i.IDGT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idGTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDGTE = &t
+		i.IDGTE = new(pulid.ID)
+		err = i.IDGTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLT"]; ok {
-		t := v.(pulid.ID)
-		i.IDLT = &t
+		i.IDLT = new(pulid.ID)
+		err = i.IDLT.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["idLTE"]; ok {
-		t := v.(pulid.ID)
-		i.IDLTE = &t
+		i.IDLTE = new(pulid.ID)
+		err = i.IDLTE.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 
 	// "name" field predicates.

@@ -18,8 +18,10 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"text/template"
 	"text/template/parse"
@@ -27,6 +29,15 @@ import (
 	"entgo.io/ent/entc/gen"
 	"entgo.io/ent/schema/field"
 	"github.com/vektah/gqlparser/v2/ast"
+)
+
+type (
+	_Marshaler interface {
+		MarshalGQL(w io.Writer)
+	}
+	_Unmarshaler interface {
+		UnmarshalGQL(v interface{}) error
+	}
 )
 
 var (
@@ -77,16 +88,29 @@ var (
 		"isSkipMode":          isSkipMode,
 		"isRelayConn":         isRelayConn,
 		"hasWhereInput":       hasWhereInput,
+		"hasMarshalGQL":       hasMarshalGQL,
+		"hasUnmarshalGQL":     hasUnmarshalGQL,
 	}
 
 	//go:embed template/*
 	templates embed.FS
+
+	marshalerType   = reflect.TypeOf((*_Marshaler)(nil)).Elem()
+	unmarshalerType = reflect.TypeOf((*_Unmarshaler)(nil)).Elem()
 )
 
 func parseT(path string) *gen.Template {
 	return gen.MustParse(gen.NewTemplate(path).
 		Funcs(TemplateFuncs).
 		ParseFS(templates, path))
+}
+
+func hasMarshalGQL(t *field.TypeInfo) bool {
+	return t.RType.Implements(marshalerType)
+}
+
+func hasUnmarshalGQL(t *field.TypeInfo) bool {
+	return t.RType.Implements(unmarshalerType)
 }
 
 // findIDType returns the type of the ID field of the given type.

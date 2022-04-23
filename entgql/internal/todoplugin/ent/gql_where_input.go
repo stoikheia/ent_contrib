@@ -1897,26 +1897,36 @@ func (i *MasterUserWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 
 	// "role" field predicates.
 	if v, ok := asMap["role"]; ok {
-		t := (role.Role)(v.(string))
-		i.Role = &t
+		i.Role = new(role.Role)
+		err = i.Role.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["roleNEQ"]; ok {
-		t := (role.Role)(v.(string))
-		i.RoleNEQ = &t
+		i.RoleNEQ = new(role.Role)
+		err = i.RoleNEQ.UnmarshalGQL(v)
+		if err != nil {
+			return err
+		}
 	}
 	if v, ok := asMap["roleIn"]; ok {
-		t := make([]role.Role, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(role.Role))
+		i.RoleIn = make([]role.Role, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.RoleIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.RoleIn = t
 	}
 	if v, ok := asMap["roleNotIn"]; ok {
-		t := make([]role.Role, 0, len(v.([]interface{})))
-		for _, o := range v.([]interface{}) {
-			t = append(t, o.(role.Role))
+		i.RoleNotIn = make([]role.Role, len(v.([]interface{})))
+		for idx, o := range v.([]interface{}) {
+			err = i.RoleNotIn[idx].UnmarshalGQL(o)
+			if err != nil {
+				return err
+			}
 		}
-		i.RoleNotIn = t
 	}
 
 	// "nullable_string" field predicates.
