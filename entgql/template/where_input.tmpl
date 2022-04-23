@@ -15,6 +15,10 @@ in the LICENSE file in the root directory of this source tree.
 
 {{ template "import" $ }}
 
+import (
+    "github.com/99designs/gqlgen/graphql"
+)
+
 {{ range $n := filterNodes $.Nodes (skipMode "where_input") }}
     {{ $comparableFields := list $n.ID }}
     {{ $names := nodePaginationNames $n }}
@@ -187,34 +191,26 @@ in the LICENSE file in the root directory of this source tree.
         }
     }
 
-    func unmarshalGQLSlide{{ $input }}(v interface{}) ([]*{{ $input }}, error) {
-        if s, ok := v.([]interface{}); ok {
-            r := make([]*{{ $input }}, 0, len(s))
-            for _, o := range s {
-                var ii {{ $input }}
-                if err := ii.UnmarshalGQL(o); err != nil {
-                    return nil, err
-                }
-                r = append(r, &ii)
+    func unmarshalGQLSlide{{ $input }}(v interface{}) (r []*{{ $input }}, err error) {
+        s := graphql.CoerceList(v)
+        r = make([]*{{ $input }}, len(s))
+        for i, o := range s {
+            r[i] = new({{ $input }})
+            if err = r[i].UnmarshalGQL(o); err != nil {
+                return nil, err
             }
-            return r, nil
         }
-
-        var ii {{ $input }}
-        if err := ii.UnmarshalGQL(v); err != nil {
-            return nil, err
-        }
-        return []*{{ $input }}{&ii}, nil
+        return
     }
+
     // UnmarshalGQL implements the graphql.Unmarshaler interface
     func (i *{{ $input }}) UnmarshalGQL(obj interface{}) (err error) {
         asMap := obj.(map[string]interface{})
         if v, ok := asMap["not"]; ok {
-            var ii {{ $input }}
-            if err := ii.UnmarshalGQL(v); err != nil {
+            i.Not = new({{ $input }})
+            if err = i.Not.UnmarshalGQL(v); err != nil {
                 return err
             }
-            i.Not = &ii
         }
         {{- range $op := list "Or" "And" }}
         if v, ok := asMap["{{ camel $op }}"]; ok {

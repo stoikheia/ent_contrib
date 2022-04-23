@@ -29,6 +29,7 @@ import (
 	"entgo.io/contrib/entgql/internal/todopulid/ent/schema/pulid"
 	"entgo.io/contrib/entgql/internal/todopulid/ent/todo"
 	"entgo.io/contrib/entgql/internal/todopulid/ent/user"
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CategoryWhereInput represents a where input for filtering Category queries.
@@ -362,35 +363,26 @@ func (i *CategoryWhereInput) P() (predicate.Category, error) {
 	}
 }
 
-func unmarshalGQLSlideCategoryWhereInput(v interface{}) ([]*CategoryWhereInput, error) {
-	if s, ok := v.([]interface{}); ok {
-		r := make([]*CategoryWhereInput, 0, len(s))
-		for _, o := range s {
-			var ii CategoryWhereInput
-			if err := ii.UnmarshalGQL(o); err != nil {
-				return nil, err
-			}
-			r = append(r, &ii)
+func unmarshalGQLSlideCategoryWhereInput(v interface{}) (r []*CategoryWhereInput, err error) {
+	s := graphql.CoerceList(v)
+	r = make([]*CategoryWhereInput, len(s))
+	for i, o := range s {
+		r[i] = new(CategoryWhereInput)
+		if err = r[i].UnmarshalGQL(o); err != nil {
+			return nil, err
 		}
-		return r, nil
 	}
-
-	var ii CategoryWhereInput
-	if err := ii.UnmarshalGQL(v); err != nil {
-		return nil, err
-	}
-	return []*CategoryWhereInput{&ii}, nil
+	return
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (i *CategoryWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 	asMap := obj.(map[string]interface{})
 	if v, ok := asMap["not"]; ok {
-		var ii CategoryWhereInput
-		if err := ii.UnmarshalGQL(v); err != nil {
+		i.Not = new(CategoryWhereInput)
+		if err = i.Not.UnmarshalGQL(v); err != nil {
 			return err
 		}
-		i.Not = &ii
 	}
 	if v, ok := asMap["or"]; ok {
 		i.Or, err = unmarshalGQLSlideCategoryWhereInput(v)
@@ -918,35 +910,26 @@ func (i *GroupWhereInput) P() (predicate.Group, error) {
 	}
 }
 
-func unmarshalGQLSlideGroupWhereInput(v interface{}) ([]*GroupWhereInput, error) {
-	if s, ok := v.([]interface{}); ok {
-		r := make([]*GroupWhereInput, 0, len(s))
-		for _, o := range s {
-			var ii GroupWhereInput
-			if err := ii.UnmarshalGQL(o); err != nil {
-				return nil, err
-			}
-			r = append(r, &ii)
+func unmarshalGQLSlideGroupWhereInput(v interface{}) (r []*GroupWhereInput, err error) {
+	s := graphql.CoerceList(v)
+	r = make([]*GroupWhereInput, len(s))
+	for i, o := range s {
+		r[i] = new(GroupWhereInput)
+		if err = r[i].UnmarshalGQL(o); err != nil {
+			return nil, err
 		}
-		return r, nil
 	}
-
-	var ii GroupWhereInput
-	if err := ii.UnmarshalGQL(v); err != nil {
-		return nil, err
-	}
-	return []*GroupWhereInput{&ii}, nil
+	return
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (i *GroupWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 	asMap := obj.(map[string]interface{})
 	if v, ok := asMap["not"]; ok {
-		var ii GroupWhereInput
-		if err := ii.UnmarshalGQL(v); err != nil {
+		i.Not = new(GroupWhereInput)
+		if err = i.Not.UnmarshalGQL(v); err != nil {
 			return err
 		}
-		i.Not = &ii
 	}
 	if v, ok := asMap["or"]; ok {
 		i.Or, err = unmarshalGQLSlideGroupWhereInput(v)
@@ -1400,35 +1383,26 @@ func (i *TodoWhereInput) P() (predicate.Todo, error) {
 	}
 }
 
-func unmarshalGQLSlideTodoWhereInput(v interface{}) ([]*TodoWhereInput, error) {
-	if s, ok := v.([]interface{}); ok {
-		r := make([]*TodoWhereInput, 0, len(s))
-		for _, o := range s {
-			var ii TodoWhereInput
-			if err := ii.UnmarshalGQL(o); err != nil {
-				return nil, err
-			}
-			r = append(r, &ii)
+func unmarshalGQLSlideTodoWhereInput(v interface{}) (r []*TodoWhereInput, err error) {
+	s := graphql.CoerceList(v)
+	r = make([]*TodoWhereInput, len(s))
+	for i, o := range s {
+		r[i] = new(TodoWhereInput)
+		if err = r[i].UnmarshalGQL(o); err != nil {
+			return nil, err
 		}
-		return r, nil
 	}
-
-	var ii TodoWhereInput
-	if err := ii.UnmarshalGQL(v); err != nil {
-		return nil, err
-	}
-	return []*TodoWhereInput{&ii}, nil
+	return
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (i *TodoWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 	asMap := obj.(map[string]interface{})
 	if v, ok := asMap["not"]; ok {
-		var ii TodoWhereInput
-		if err := ii.UnmarshalGQL(v); err != nil {
+		i.Not = new(TodoWhereInput)
+		if err = i.Not.UnmarshalGQL(v); err != nil {
 			return err
 		}
-		i.Not = &ii
 	}
 	if v, ok := asMap["or"]; ok {
 		i.Or, err = unmarshalGQLSlideTodoWhereInput(v)
@@ -1904,35 +1878,26 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 	}
 }
 
-func unmarshalGQLSlideUserWhereInput(v interface{}) ([]*UserWhereInput, error) {
-	if s, ok := v.([]interface{}); ok {
-		r := make([]*UserWhereInput, 0, len(s))
-		for _, o := range s {
-			var ii UserWhereInput
-			if err := ii.UnmarshalGQL(o); err != nil {
-				return nil, err
-			}
-			r = append(r, &ii)
+func unmarshalGQLSlideUserWhereInput(v interface{}) (r []*UserWhereInput, err error) {
+	s := graphql.CoerceList(v)
+	r = make([]*UserWhereInput, len(s))
+	for i, o := range s {
+		r[i] = new(UserWhereInput)
+		if err = r[i].UnmarshalGQL(o); err != nil {
+			return nil, err
 		}
-		return r, nil
 	}
-
-	var ii UserWhereInput
-	if err := ii.UnmarshalGQL(v); err != nil {
-		return nil, err
-	}
-	return []*UserWhereInput{&ii}, nil
+	return
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (i *UserWhereInput) UnmarshalGQL(obj interface{}) (err error) {
 	asMap := obj.(map[string]interface{})
 	if v, ok := asMap["not"]; ok {
-		var ii UserWhereInput
-		if err := ii.UnmarshalGQL(v); err != nil {
+		i.Not = new(UserWhereInput)
+		if err = i.Not.UnmarshalGQL(v); err != nil {
 			return err
 		}
-		i.Not = &ii
 	}
 	if v, ok := asMap["or"]; ok {
 		i.Or, err = unmarshalGQLSlideUserWhereInput(v)
