@@ -361,13 +361,389 @@ func (i *CategoryWhereInput) P() (predicate.Category, error) {
 	}
 }
 
-// UnmarshalGQL implements the graphql.Unmarshaler interface
-func (i *CategoryWhereInput) UnmarshalGQL(obj interface{}) error {
-	raw, err := json.Marshal(obj)
-	if err != nil {
-		return err
+func unmarshalGQLSlideCategoryWhereInput(v interface{}) ([]*CategoryWhereInput, error) {
+	if s, ok := v.([]interface{}); ok {
+		r := make([]*CategoryWhereInput, 0, len(s))
+		for _, o := range s {
+			var ii CategoryWhereInput
+			if err := ii.UnmarshalGQL(o); err != nil {
+				return nil, err
+			}
+			r = append(r, &ii)
+		}
+		return r, nil
 	}
-	return json.Unmarshal(raw, i)
+
+	var ii CategoryWhereInput
+	if err := ii.UnmarshalGQL(v); err != nil {
+		return nil, err
+	}
+	return []*CategoryWhereInput{&ii}, nil
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *CategoryWhereInput) UnmarshalGQL(obj interface{}) (err error) {
+	asMap := obj.(map[string]interface{})
+	if v, ok := asMap["not"]; ok {
+		var ii CategoryWhereInput
+		if err := ii.UnmarshalGQL(v); err != nil {
+			return err
+		}
+		i.Not = &ii
+	}
+	if v, ok := asMap["or"]; ok {
+		i.Or, err = unmarshalGQLSlideCategoryWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	if v, ok := asMap["and"]; ok {
+		i.And, err = unmarshalGQLSlideCategoryWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "id" field predicates.
+	if v, ok := asMap["id"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.ID = &t
+	}
+	if v, ok := asMap["idNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDNEQ = &t
+	}
+	if v, ok := asMap["idIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDIn = t
+	}
+	if v, ok := asMap["idNotIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDNotIn = t
+	}
+	if v, ok := asMap["idGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGT = &t
+	}
+	if v, ok := asMap["idGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGTE = &t
+	}
+	if v, ok := asMap["idLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLT = &t
+	}
+	if v, ok := asMap["idLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLTE = &t
+	}
+
+	// "text" field predicates.
+	if v, ok := asMap["text"]; ok {
+		t := v.(string)
+		i.Text = &t
+	}
+	if v, ok := asMap["textNEQ"]; ok {
+		t := v.(string)
+		i.TextNEQ = &t
+	}
+	if v, ok := asMap["textIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.TextIn = t
+	}
+	if v, ok := asMap["textNotIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.TextNotIn = t
+	}
+	if v, ok := asMap["textGT"]; ok {
+		t := v.(string)
+		i.TextGT = &t
+	}
+	if v, ok := asMap["textGTE"]; ok {
+		t := v.(string)
+		i.TextGTE = &t
+	}
+	if v, ok := asMap["textLT"]; ok {
+		t := v.(string)
+		i.TextLT = &t
+	}
+	if v, ok := asMap["textLTE"]; ok {
+		t := v.(string)
+		i.TextLTE = &t
+	}
+	if v, ok := asMap["textContains"]; ok {
+		t := v.(string)
+		i.TextContains = &t
+	}
+	if v, ok := asMap["textHasPrefix"]; ok {
+		t := v.(string)
+		i.TextHasPrefix = &t
+	}
+	if v, ok := asMap["textHasSuffix"]; ok {
+		t := v.(string)
+		i.TextHasSuffix = &t
+	}
+	if v, ok := asMap["textEqualFold"]; ok {
+		t := v.(string)
+		i.TextEqualFold = &t
+	}
+	if v, ok := asMap["textContainsFold"]; ok {
+		t := v.(string)
+		i.TextContainsFold = &t
+	}
+
+	// "status" field predicates.
+	if v, ok := asMap["status"]; ok {
+		t := (category.Status)(v.(string))
+		i.Status = &t
+	}
+	if v, ok := asMap["statusNEQ"]; ok {
+		t := (category.Status)(v.(string))
+		i.StatusNEQ = &t
+	}
+	if v, ok := asMap["statusIn"]; ok {
+		t := make([]category.Status, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(category.Status))
+		}
+		i.StatusIn = t
+	}
+	if v, ok := asMap["statusNotIn"]; ok {
+		t := make([]category.Status, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(category.Status))
+		}
+		i.StatusNotIn = t
+	}
+
+	// "config" field predicates.
+	if v, ok := asMap["config"]; ok {
+		i.Config = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configNEQ"]; ok {
+		i.ConfigNEQ = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configIn"]; ok {
+		t := make([]*schematype.CategoryConfig, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(*schematype.CategoryConfig))
+		}
+		i.ConfigIn = t
+	}
+	if v, ok := asMap["configNotIn"]; ok {
+		t := make([]*schematype.CategoryConfig, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(*schematype.CategoryConfig))
+		}
+		i.ConfigNotIn = t
+	}
+	if v, ok := asMap["configGT"]; ok {
+		i.ConfigGT = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configGTE"]; ok {
+		i.ConfigGTE = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configLT"]; ok {
+		i.ConfigLT = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configLTE"]; ok {
+		i.ConfigLTE = v.(*schematype.CategoryConfig)
+	}
+	if v, ok := asMap["configIsNil"]; ok {
+		i.ConfigIsNil = v.(bool)
+	}
+	if v, ok := asMap["configNotNil"]; ok {
+		i.ConfigNotNil = v.(bool)
+	}
+
+	// "duration" field predicates.
+	if v, ok := asMap["duration"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.Duration = &t
+	}
+	if v, ok := asMap["durationNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.DurationNEQ = &t
+	}
+	if v, ok := asMap["durationIn"]; ok {
+		t := make([]time.Duration, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(time.Duration))
+		}
+		i.DurationIn = t
+	}
+	if v, ok := asMap["durationNotIn"]; ok {
+		t := make([]time.Duration, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(time.Duration))
+		}
+		i.DurationNotIn = t
+	}
+	if v, ok := asMap["durationGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.DurationGT = &t
+	}
+	if v, ok := asMap["durationGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.DurationGTE = &t
+	}
+	if v, ok := asMap["durationLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.DurationLT = &t
+	}
+	if v, ok := asMap["durationLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (time.Duration)(i64)
+		i.DurationLTE = &t
+	}
+	if v, ok := asMap["durationIsNil"]; ok {
+		i.DurationIsNil = v.(bool)
+	}
+	if v, ok := asMap["durationNotNil"]; ok {
+		i.DurationNotNil = v.(bool)
+	}
+
+	// "count" field predicates.
+	if v, ok := asMap["count"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.Count = &t
+	}
+	if v, ok := asMap["countNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.CountNEQ = &t
+	}
+	if v, ok := asMap["countIn"]; ok {
+		t := make([]uint64, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(uint64))
+		}
+		i.CountIn = t
+	}
+	if v, ok := asMap["countNotIn"]; ok {
+		t := make([]uint64, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(uint64))
+		}
+		i.CountNotIn = t
+	}
+	if v, ok := asMap["countGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.CountGT = &t
+	}
+	if v, ok := asMap["countGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.CountGTE = &t
+	}
+	if v, ok := asMap["countLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.CountLT = &t
+	}
+	if v, ok := asMap["countLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (uint64)(i64)
+		i.CountLTE = &t
+	}
+	if v, ok := asMap["countIsNil"]; ok {
+		i.CountIsNil = v.(bool)
+	}
+	if v, ok := asMap["countNotNil"]; ok {
+		i.CountNotNil = v.(bool)
+	}
+
+	// "todos" edge predicates.
+	if v, ok := asMap["hasTodos"]; ok && v != nil {
+		t := v.(bool)
+		i.HasTodos = &t
+	}
+	if v, ok := asMap["hasTodosWith"]; ok {
+		i.HasTodosWith, err = unmarshalGQLSlideTodoWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
@@ -565,13 +941,185 @@ func (i *GroupWhereInput) P() (predicate.Group, error) {
 	}
 }
 
-// UnmarshalGQL implements the graphql.Unmarshaler interface
-func (i *GroupWhereInput) UnmarshalGQL(obj interface{}) error {
-	raw, err := json.Marshal(obj)
-	if err != nil {
-		return err
+func unmarshalGQLSlideGroupWhereInput(v interface{}) ([]*GroupWhereInput, error) {
+	if s, ok := v.([]interface{}); ok {
+		r := make([]*GroupWhereInput, 0, len(s))
+		for _, o := range s {
+			var ii GroupWhereInput
+			if err := ii.UnmarshalGQL(o); err != nil {
+				return nil, err
+			}
+			r = append(r, &ii)
+		}
+		return r, nil
 	}
-	return json.Unmarshal(raw, i)
+
+	var ii GroupWhereInput
+	if err := ii.UnmarshalGQL(v); err != nil {
+		return nil, err
+	}
+	return []*GroupWhereInput{&ii}, nil
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *GroupWhereInput) UnmarshalGQL(obj interface{}) (err error) {
+	asMap := obj.(map[string]interface{})
+	if v, ok := asMap["not"]; ok {
+		var ii GroupWhereInput
+		if err := ii.UnmarshalGQL(v); err != nil {
+			return err
+		}
+		i.Not = &ii
+	}
+	if v, ok := asMap["or"]; ok {
+		i.Or, err = unmarshalGQLSlideGroupWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	if v, ok := asMap["and"]; ok {
+		i.And, err = unmarshalGQLSlideGroupWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "id" field predicates.
+	if v, ok := asMap["id"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.ID = &t
+	}
+	if v, ok := asMap["idNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDNEQ = &t
+	}
+	if v, ok := asMap["idIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDIn = t
+	}
+	if v, ok := asMap["idNotIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDNotIn = t
+	}
+	if v, ok := asMap["idGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGT = &t
+	}
+	if v, ok := asMap["idGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGTE = &t
+	}
+	if v, ok := asMap["idLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLT = &t
+	}
+	if v, ok := asMap["idLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLTE = &t
+	}
+
+	// "name" field predicates.
+	if v, ok := asMap["name"]; ok {
+		t := v.(string)
+		i.Name = &t
+	}
+	if v, ok := asMap["nameNEQ"]; ok {
+		t := v.(string)
+		i.NameNEQ = &t
+	}
+	if v, ok := asMap["nameIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.NameIn = t
+	}
+	if v, ok := asMap["nameNotIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.NameNotIn = t
+	}
+	if v, ok := asMap["nameGT"]; ok {
+		t := v.(string)
+		i.NameGT = &t
+	}
+	if v, ok := asMap["nameGTE"]; ok {
+		t := v.(string)
+		i.NameGTE = &t
+	}
+	if v, ok := asMap["nameLT"]; ok {
+		t := v.(string)
+		i.NameLT = &t
+	}
+	if v, ok := asMap["nameLTE"]; ok {
+		t := v.(string)
+		i.NameLTE = &t
+	}
+	if v, ok := asMap["nameContains"]; ok {
+		t := v.(string)
+		i.NameContains = &t
+	}
+	if v, ok := asMap["nameHasPrefix"]; ok {
+		t := v.(string)
+		i.NameHasPrefix = &t
+	}
+	if v, ok := asMap["nameHasSuffix"]; ok {
+		t := v.(string)
+		i.NameHasSuffix = &t
+	}
+	if v, ok := asMap["nameEqualFold"]; ok {
+		t := v.(string)
+		i.NameEqualFold = &t
+	}
+	if v, ok := asMap["nameContainsFold"]; ok {
+		t := v.(string)
+		i.NameContainsFold = &t
+	}
+
+	// "users" edge predicates.
+	if v, ok := asMap["hasUsers"]; ok && v != nil {
+		t := v.(bool)
+		i.HasUsers = &t
+	}
+	if v, ok := asMap["hasUsersWith"]; ok {
+		i.HasUsersWith, err = unmarshalGQLSlideUserWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
@@ -899,13 +1447,337 @@ func (i *TodoWhereInput) P() (predicate.Todo, error) {
 	}
 }
 
-// UnmarshalGQL implements the graphql.Unmarshaler interface
-func (i *TodoWhereInput) UnmarshalGQL(obj interface{}) error {
-	raw, err := json.Marshal(obj)
-	if err != nil {
-		return err
+func unmarshalGQLSlideTodoWhereInput(v interface{}) ([]*TodoWhereInput, error) {
+	if s, ok := v.([]interface{}); ok {
+		r := make([]*TodoWhereInput, 0, len(s))
+		for _, o := range s {
+			var ii TodoWhereInput
+			if err := ii.UnmarshalGQL(o); err != nil {
+				return nil, err
+			}
+			r = append(r, &ii)
+		}
+		return r, nil
 	}
-	return json.Unmarshal(raw, i)
+
+	var ii TodoWhereInput
+	if err := ii.UnmarshalGQL(v); err != nil {
+		return nil, err
+	}
+	return []*TodoWhereInput{&ii}, nil
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *TodoWhereInput) UnmarshalGQL(obj interface{}) (err error) {
+	asMap := obj.(map[string]interface{})
+	if v, ok := asMap["not"]; ok {
+		var ii TodoWhereInput
+		if err := ii.UnmarshalGQL(v); err != nil {
+			return err
+		}
+		i.Not = &ii
+	}
+	if v, ok := asMap["or"]; ok {
+		i.Or, err = unmarshalGQLSlideTodoWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	if v, ok := asMap["and"]; ok {
+		i.And, err = unmarshalGQLSlideTodoWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "id" field predicates.
+	if v, ok := asMap["id"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.ID = &t
+	}
+	if v, ok := asMap["idNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDNEQ = &t
+	}
+	if v, ok := asMap["idIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDIn = t
+	}
+	if v, ok := asMap["idNotIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDNotIn = t
+	}
+	if v, ok := asMap["idGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGT = &t
+	}
+	if v, ok := asMap["idGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGTE = &t
+	}
+	if v, ok := asMap["idLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLT = &t
+	}
+	if v, ok := asMap["idLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLTE = &t
+	}
+
+	// "created_at" field predicates.
+	if v, ok := asMap["createdAt"]; ok {
+		t := v.(time.Time)
+		i.CreatedAt = &t
+	}
+	if v, ok := asMap["createdAtNEQ"]; ok {
+		t := v.(time.Time)
+		i.CreatedAtNEQ = &t
+	}
+	if v, ok := asMap["createdAtIn"]; ok {
+		t := make([]time.Time, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(time.Time))
+		}
+		i.CreatedAtIn = t
+	}
+	if v, ok := asMap["createdAtNotIn"]; ok {
+		t := make([]time.Time, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(time.Time))
+		}
+		i.CreatedAtNotIn = t
+	}
+	if v, ok := asMap["createdAtGT"]; ok {
+		t := v.(time.Time)
+		i.CreatedAtGT = &t
+	}
+	if v, ok := asMap["createdAtGTE"]; ok {
+		t := v.(time.Time)
+		i.CreatedAtGTE = &t
+	}
+	if v, ok := asMap["createdAtLT"]; ok {
+		t := v.(time.Time)
+		i.CreatedAtLT = &t
+	}
+	if v, ok := asMap["createdAtLTE"]; ok {
+		t := v.(time.Time)
+		i.CreatedAtLTE = &t
+	}
+
+	// "status" field predicates.
+	if v, ok := asMap["status"]; ok {
+		t := (todo.Status)(v.(string))
+		i.Status = &t
+	}
+	if v, ok := asMap["statusNEQ"]; ok {
+		t := (todo.Status)(v.(string))
+		i.StatusNEQ = &t
+	}
+	if v, ok := asMap["statusIn"]; ok {
+		t := make([]todo.Status, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(todo.Status))
+		}
+		i.StatusIn = t
+	}
+	if v, ok := asMap["statusNotIn"]; ok {
+		t := make([]todo.Status, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(todo.Status))
+		}
+		i.StatusNotIn = t
+	}
+
+	// "priority" field predicates.
+	if v, ok := asMap["priority"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.Priority = &t
+	}
+	if v, ok := asMap["priorityNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.PriorityNEQ = &t
+	}
+	if v, ok := asMap["priorityIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.PriorityIn = t
+	}
+	if v, ok := asMap["priorityNotIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.PriorityNotIn = t
+	}
+	if v, ok := asMap["priorityGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.PriorityGT = &t
+	}
+	if v, ok := asMap["priorityGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.PriorityGTE = &t
+	}
+	if v, ok := asMap["priorityLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.PriorityLT = &t
+	}
+	if v, ok := asMap["priorityLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.PriorityLTE = &t
+	}
+
+	// "text" field predicates.
+	if v, ok := asMap["text"]; ok {
+		t := v.(string)
+		i.Text = &t
+	}
+	if v, ok := asMap["textNEQ"]; ok {
+		t := v.(string)
+		i.TextNEQ = &t
+	}
+	if v, ok := asMap["textIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.TextIn = t
+	}
+	if v, ok := asMap["textNotIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.TextNotIn = t
+	}
+	if v, ok := asMap["textGT"]; ok {
+		t := v.(string)
+		i.TextGT = &t
+	}
+	if v, ok := asMap["textGTE"]; ok {
+		t := v.(string)
+		i.TextGTE = &t
+	}
+	if v, ok := asMap["textLT"]; ok {
+		t := v.(string)
+		i.TextLT = &t
+	}
+	if v, ok := asMap["textLTE"]; ok {
+		t := v.(string)
+		i.TextLTE = &t
+	}
+	if v, ok := asMap["textContains"]; ok {
+		t := v.(string)
+		i.TextContains = &t
+	}
+	if v, ok := asMap["textHasPrefix"]; ok {
+		t := v.(string)
+		i.TextHasPrefix = &t
+	}
+	if v, ok := asMap["textHasSuffix"]; ok {
+		t := v.(string)
+		i.TextHasSuffix = &t
+	}
+	if v, ok := asMap["textEqualFold"]; ok {
+		t := v.(string)
+		i.TextEqualFold = &t
+	}
+	if v, ok := asMap["textContainsFold"]; ok {
+		t := v.(string)
+		i.TextContainsFold = &t
+	}
+
+	// "parent" edge predicates.
+	if v, ok := asMap["hasParent"]; ok && v != nil {
+		t := v.(bool)
+		i.HasParent = &t
+	}
+	if v, ok := asMap["hasParentWith"]; ok {
+		i.HasParentWith, err = unmarshalGQLSlideTodoWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "children" edge predicates.
+	if v, ok := asMap["hasChildren"]; ok && v != nil {
+		t := v.(bool)
+		i.HasChildren = &t
+	}
+	if v, ok := asMap["hasChildrenWith"]; ok {
+		i.HasChildrenWith, err = unmarshalGQLSlideTodoWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "category" edge predicates.
+	if v, ok := asMap["hasCategory"]; ok && v != nil {
+		t := v.(bool)
+		i.HasCategory = &t
+	}
+	if v, ok := asMap["hasCategoryWith"]; ok {
+		i.HasCategoryWith, err = unmarshalGQLSlideCategoryWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
@@ -1103,13 +1975,185 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 	}
 }
 
-// UnmarshalGQL implements the graphql.Unmarshaler interface
-func (i *UserWhereInput) UnmarshalGQL(obj interface{}) error {
-	raw, err := json.Marshal(obj)
-	if err != nil {
-		return err
+func unmarshalGQLSlideUserWhereInput(v interface{}) ([]*UserWhereInput, error) {
+	if s, ok := v.([]interface{}); ok {
+		r := make([]*UserWhereInput, 0, len(s))
+		for _, o := range s {
+			var ii UserWhereInput
+			if err := ii.UnmarshalGQL(o); err != nil {
+				return nil, err
+			}
+			r = append(r, &ii)
+		}
+		return r, nil
 	}
-	return json.Unmarshal(raw, i)
+
+	var ii UserWhereInput
+	if err := ii.UnmarshalGQL(v); err != nil {
+		return nil, err
+	}
+	return []*UserWhereInput{&ii}, nil
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (i *UserWhereInput) UnmarshalGQL(obj interface{}) (err error) {
+	asMap := obj.(map[string]interface{})
+	if v, ok := asMap["not"]; ok {
+		var ii UserWhereInput
+		if err := ii.UnmarshalGQL(v); err != nil {
+			return err
+		}
+		i.Not = &ii
+	}
+	if v, ok := asMap["or"]; ok {
+		i.Or, err = unmarshalGQLSlideUserWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	if v, ok := asMap["and"]; ok {
+		i.And, err = unmarshalGQLSlideUserWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	// "id" field predicates.
+	if v, ok := asMap["id"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.ID = &t
+	}
+	if v, ok := asMap["idNEQ"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDNEQ = &t
+	}
+	if v, ok := asMap["idIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDIn = t
+	}
+	if v, ok := asMap["idNotIn"]; ok {
+		t := make([]int, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(int))
+		}
+		i.IDNotIn = t
+	}
+	if v, ok := asMap["idGT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGT = &t
+	}
+	if v, ok := asMap["idGTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDGTE = &t
+	}
+	if v, ok := asMap["idLT"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLT = &t
+	}
+	if v, ok := asMap["idLTE"]; ok {
+		i64, err := v.(json.Number).Int64()
+		if err != nil {
+			return err
+		}
+		t := (int)(i64)
+		i.IDLTE = &t
+	}
+
+	// "name" field predicates.
+	if v, ok := asMap["name"]; ok {
+		t := v.(string)
+		i.Name = &t
+	}
+	if v, ok := asMap["nameNEQ"]; ok {
+		t := v.(string)
+		i.NameNEQ = &t
+	}
+	if v, ok := asMap["nameIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.NameIn = t
+	}
+	if v, ok := asMap["nameNotIn"]; ok {
+		t := make([]string, 0, len(v.([]interface{})))
+		for _, o := range v.([]interface{}) {
+			t = append(t, o.(string))
+		}
+		i.NameNotIn = t
+	}
+	if v, ok := asMap["nameGT"]; ok {
+		t := v.(string)
+		i.NameGT = &t
+	}
+	if v, ok := asMap["nameGTE"]; ok {
+		t := v.(string)
+		i.NameGTE = &t
+	}
+	if v, ok := asMap["nameLT"]; ok {
+		t := v.(string)
+		i.NameLT = &t
+	}
+	if v, ok := asMap["nameLTE"]; ok {
+		t := v.(string)
+		i.NameLTE = &t
+	}
+	if v, ok := asMap["nameContains"]; ok {
+		t := v.(string)
+		i.NameContains = &t
+	}
+	if v, ok := asMap["nameHasPrefix"]; ok {
+		t := v.(string)
+		i.NameHasPrefix = &t
+	}
+	if v, ok := asMap["nameHasSuffix"]; ok {
+		t := v.(string)
+		i.NameHasSuffix = &t
+	}
+	if v, ok := asMap["nameEqualFold"]; ok {
+		t := v.(string)
+		i.NameEqualFold = &t
+	}
+	if v, ok := asMap["nameContainsFold"]; ok {
+		t := v.(string)
+		i.NameContainsFold = &t
+	}
+
+	// "groups" edge predicates.
+	if v, ok := asMap["hasGroups"]; ok && v != nil {
+		t := v.(bool)
+		i.HasGroups = &t
+	}
+	if v, ok := asMap["hasGroupsWith"]; ok {
+		i.HasGroupsWith, err = unmarshalGQLSlideGroupWhereInput(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // MarshalGQL implements the graphql.Marshaler interface

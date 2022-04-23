@@ -187,13 +187,111 @@ in the LICENSE file in the root directory of this source tree.
         }
     }
 
-    // UnmarshalGQL implements the graphql.Unmarshaler interface
-    func (i *{{ $input }}) UnmarshalGQL(obj interface{}) error {
-        raw, err :=json.Marshal(obj)
-        if err != nil {
-            return err
+    func unmarshalGQLSlide{{ $input }}(v interface{}) ([]*{{ $input }}, error) {
+        if s, ok := v.([]interface{}); ok {
+            r := make([]*{{ $input }}, 0, len(s))
+            for _, o := range s {
+                var ii {{ $input }}
+                if err := ii.UnmarshalGQL(o); err != nil {
+                    return nil, err
+                }
+                r = append(r, &ii)
+            }
+            return r, nil
         }
-        return json.Unmarshal(raw, i)
+
+        var ii {{ $input }}
+        if err := ii.UnmarshalGQL(v); err != nil {
+            return nil, err
+        }
+        return []*{{ $input }}{&ii}, nil
+    }
+    // UnmarshalGQL implements the graphql.Unmarshaler interface
+    func (i *{{ $input }}) UnmarshalGQL(obj interface{}) (err error) {
+        asMap := obj.(map[string]interface{})
+        if v, ok := asMap["not"]; ok {
+            var ii {{ $input }}
+            if err := ii.UnmarshalGQL(v); err != nil {
+                return err
+            }
+            i.Not = &ii
+        }
+        {{- range $op := list "Or" "And" }}
+        if v, ok := asMap["{{ camel $op }}"]; ok {
+            i.{{ $op }}, err = unmarshalGQLSlide{{ $input }}(v)
+            if err != nil {
+                return err
+            }
+        }
+        {{- end }}
+        {{- range $f := $comparableFields }}
+
+            // "{{ $f.Name }}" field predicates.
+            {{- range $op := $f.Ops }}
+                {{- $field := print $f.StructField $op.Name }}
+                {{- $jsonTag := print $f.Name "_" $op.Name }}
+                {{- /* We name the field filter "<Field>EQ()" as "<Field>()", because it's cleaner (e.g. "name_eq" -> "name") */}}
+                {{- if eq $op.Name "EQ" }}
+                    {{- $field = $f.StructField }}
+                    {{- $jsonTag = $f.Name }}
+                {{- end }}
+                if v, ok := asMap["{{ camel $jsonTag }}"]; ok {
+                    {{- $type := $f.Type }}
+                    {{- if $op.Niladic }}
+                        {{- $type = "bool" }}
+                    {{- end }}
+                    {{- if $op.Variadic }}
+                        t := make([]{{ $type }}, 0, len(v.([]interface{})))
+                        for _, o := range v.([]interface{}) {
+                            t = append(t, o.({{ $type }}))
+                        }
+                        i.{{ $field }} = t
+                    {{- else if or $op.Niladic $f.Type.RType.IsPtr }}
+                        i.{{ $field }} = v.({{ $type }})
+                    {{- else }}
+                        {{- if $f.Type.Type.Float }}
+                            f, err := v.(json.Number).Float64()
+                            if err != nil {
+                                return err
+                            }
+                            t := ({{ $type }})(f)
+                        {{- else if $f.Type.Type.Integer }}
+                            i64, err := v.(json.Number).Int64()
+                            if err != nil {
+                                return err
+                            }
+                            t := ({{ $type }})(i64)
+                        {{- else if $f.IsEnum }}
+                            t := ({{ $type }})(v.(string))
+                        {{- else }}
+                            t := v.({{ $type }})
+                        {{- end }}
+                        i.{{ $field }} = &t
+                    {{- end }}
+                }
+            {{- end }}
+        {{- end }}
+
+        {{ range $e := filterEdges $n.Edges (skipMode "where_input") }}
+            {{- $names := nodePaginationNames $e.Type }}
+
+            // "{{ $e.Name }}" edge predicates.
+            {{- $field := print "Has" $e.StructField }}
+            {{- $jsonTag := print "has_" $e.Name }}
+            if v, ok := asMap["{{ camel $jsonTag }}"]; ok && v != nil {
+                t := v.(bool)
+                i.{{ $field }} = &t
+            }
+            {{- $field = print $field "With" }}
+            {{- $jsonTag = print $jsonTag "_with" }}
+            if v, ok := asMap["{{ camel $jsonTag }}"]; ok {
+                i.{{ $field }}, err = unmarshalGQLSlide{{ $names.WhereInput }}(v)
+                if err != nil {
+                    return err
+                }
+            }
+        {{- end }}
+        return nil
     }
 
     // MarshalGQL implements the graphql.Marshaler interface
